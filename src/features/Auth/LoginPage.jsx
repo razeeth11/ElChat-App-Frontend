@@ -11,17 +11,28 @@ import { Button } from "@/components/ui/Button";
 import { Check, ChevronDown, Moon, Search, Sun } from "lucide-react";
 import axios from "axios";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "next-themes";
+import { AuthContext } from "../../AuthContext/AuthContent";
 
 export function LoginPage() {
+  const { setAuthValue } = useContext(AuthContext);
   const { theme, setTheme } = useTheme();
+
+  function nextClickHandler() {
+    setAuthValue("otp-verify");
+  }
   return (
     <div className="h-screen w-full px-5 py-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 p-2.5">
-          <img src={LOGO} alt="ElChat Logo" className="w-8" />
+          <img
+            src={LOGO}
+            alt="ElChat Logo"
+            loading="lazy"
+            className="w-8 h-8"
+          />
           <h2 className="font-medium">ElChat App</h2>
         </div>
         <Button
@@ -38,7 +49,8 @@ export function LoginPage() {
             <img
               src={CHAT}
               alt="ElChat Logo"
-              className="hidden md:block md:w-20 rounded-2xl"
+              loading="lazy"
+              className="hidden md:block md:w-20 md:h-15 rounded-2xl"
             />
             <div>
               <h3 className="font-medium">Use ChatApp on Desktop</h3>
@@ -61,7 +73,12 @@ export function LoginPage() {
           <div>
             <SelectCountry />
           </div>
-          <Button className="p-5 w-30 rounded-full cursor-pointer">Next</Button>
+          <Button
+            className="p-5 w-30 rounded-full cursor-pointer"
+            onClick={nextClickHandler}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>
@@ -116,7 +133,8 @@ export function SelectCountry() {
               <img
                 src={selectedCountry.flag}
                 alt="selected-country-image.png"
-                className="w-6 mr-2.5"
+                loading="lazy"
+                className="w-6 h-4 mr-2.5"
               />
             )}
             Select Country
@@ -144,7 +162,11 @@ export function SelectCountry() {
                 onClick={() => selectCountryHandler(item)}
               >
                 <div>
-                  <img src={item.flags.png} className="w-10" />
+                  <img
+                    src={item.flags.png}
+                    loading="lazy"
+                    className="w-10 h-4"
+                  />
                 </div>
                 <h1 className="text-center text-xs w-full">{item.cca3}</h1>
                 <p className="w-10">
