@@ -30,20 +30,20 @@ export function LoginPage() {
     numberError: false,
   });
 
-  // const sendOtpMutation = useMutation({
-  //   mutationFn: (payload) => {
-  //     return axios.post(`${BASE_URL}/auth/login-otp`, payload);
-  //   },
+  const sendOtpMutation = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${BASE_URL}/auth/login-otp`, payload);
+    },
 
-  //   onSuccess: (response) => {
-  //     toast.success(response.data.message || "OTP sent successfully");
-  //     setAuthValue("otp-verify");
-  //   },
+    onSuccess: (response) => {
+      toast.success(response.data.message || "OTP sent successfully");
+      setAuthValue("otp-verify");
+    },
 
-  //   onError: (error) => {
-  //     toast.error(error.response.data.message || "Something went wrong");
-  //   },
-  // });
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
 
   function nextClickHandler() {
     if (
@@ -57,9 +57,9 @@ export function LoginPage() {
 
     setAuthValue("verify-otp");
 
-    // sendOtpMutation.mutate({
-    //   phoneNumber: `${selectedCountry.code}${selectedCountry.phoneNumber}`,
-    // });
+    sendOtpMutation.mutate({
+      phoneNumber: `${selectedCountry.code}${selectedCountry.phoneNumber}`,
+    });
   }
 
   return (
