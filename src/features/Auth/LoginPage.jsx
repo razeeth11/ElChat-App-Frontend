@@ -17,7 +17,7 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import clsx from "clsx";
-import { BASE_URL } from "../../App";
+import { LOCAL_BASE_URL } from "../../App";
 
 export function LoginPage() {
   const { theme, setTheme } = useTheme();
@@ -32,7 +32,7 @@ export function LoginPage() {
 
   const sendOtpMutation = useMutation({
     mutationFn: (payload) => {
-      return axios.post(`${BASE_URL}/auth/login-otp`, payload);
+      return axios.post(`${LOCAL_BASE_URL}/auth/login-otp`, payload);
     },
 
     onSuccess: (response) => {
