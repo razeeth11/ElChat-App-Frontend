@@ -4,7 +4,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { MoveLeft } from "lucide-react";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthContext/AuthContent";
