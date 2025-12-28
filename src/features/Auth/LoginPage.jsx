@@ -1,7 +1,7 @@
 import LOGO from "../../assets/logo.png";
 import CHAT from "../../assets/chat-illustration.png";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Popover,
   PopoverContent,
@@ -14,15 +14,54 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContext, useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "next-themes";
+import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
+import clsx from "clsx";
+import { BASE_URL } from "../../App";
 
 export function LoginPage() {
-  const { setAuthValue } = useContext(AuthContext);
   const { theme, setTheme } = useTheme();
+  const { setAuthValue } = useContext(AuthContext);
+  const [selectedCountry, setSelectedCountry] = useState({
+    name: "IND",
+    code: "+91",
+    flag: "https://flagcdn.com/w320/in.png",
+    phoneNumber: "",
+    numberError: false,
+  });
+
+  // const sendOtpMutation = useMutation({
+  //   mutationFn: (payload) => {
+  //     return axios.post(`${BASE_URL}/auth/login-otp`, payload);
+  //   },
+
+  //   onSuccess: (response) => {
+  //     toast.success(response.data.message || "OTP sent successfully");
+  //     setAuthValue("otp-verify");
+  //   },
+
+  //   onError: (error) => {
+  //     toast.error(error.response.data.message || "Something went wrong");
+  //   },
+  // });
 
   function nextClickHandler() {
-    setAuthValue("otp-verify");
+    if (
+      selectedCountry.phoneNumber === "" ||
+      selectedCountry.phoneNumber.length < 7
+    ) {
+      setSelectedCountry((prev) => ({ ...prev, numberError: true }));
+      toast.error("Please enter a valid phone number");
+      return;
+    }
+
+    setAuthValue("verify-otp");
+
+    // sendOtpMutation.mutate({
+    //   phoneNumber: `${selectedCountry.code}${selectedCountry.phoneNumber}`,
+    // });
   }
+
   return (
     <div className="h-screen w-full px-5 py-2">
       <div className="flex items-center justify-between">
@@ -71,7 +110,10 @@ export function LoginPage() {
             </p>
           </div>
           <div>
-            <SelectCountry />
+            <SelectCountry
+              selectedCountry={selectedCountry}
+              setSelectedCountry={setSelectedCountry}
+            />
           </div>
           <Button
             className="p-5 w-30 rounded-full cursor-pointer"
@@ -85,19 +127,15 @@ export function LoginPage() {
   );
 }
 
-export function SelectCountry() {
+export function SelectCountry({ selectedCountry, setSelectedCountry }) {
   const [search, setSearch] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState({
-    name: "IND",
-    code: "+91",
-    flag: "https://flagcdn.com/w320/in.png",
-  });
+  const [openCountries, setOpenCountries] = useState(false);
 
   function selectCountryHandler(item) {
     setSelectedCountry({
       name: item.cca3,
       code: `${item.idd.root}${
-        item.idd.suffixes?.length === 1 && item.idd.suffixes[0]?.length === 2
+        item.idd.suffixes?.length === 1 && item.idd.suffixes[0]?.length < 3
           ? item.idd.suffixes[0]
           : ""
       }`,
@@ -122,12 +160,13 @@ export function SelectCountry() {
   }, [search, query.data]);
 
   return (
-    <div className="flex flex-col gap-2.5">
-      <Popover className="border w-90">
+    <div className="flex flex-col gap-4">
+      <Popover className="border w-90" open={openCountries}>
         <PopoverTrigger asChild className="w-full">
           <Button
             variant="outline"
             className="w-80 px-5 py-6 rounded-full cursor-pointer"
+            onClick={() => setOpenCountries((prev) => !prev)}
           >
             {selectedCountry.flag && (
               <img
@@ -159,7 +198,10 @@ export function SelectCountry() {
                 key={index}
                 variant="ghost"
                 className="flex justify-between gap-2.5 p-6 w-full [&:hover]:bg-bg-tertiary cursor-pointer"
-                onClick={() => selectCountryHandler(item)}
+                onClick={() => {
+                  selectCountryHandler(item);
+                  setOpenCountries(false);
+                }}
               >
                 <div>
                   <img
@@ -172,7 +214,7 @@ export function SelectCountry() {
                 <p className="w-10">
                   {item.idd.root}
                   {item.idd.suffixes?.length === 1 &&
-                  item.idd.suffixes[0]?.length === 2
+                  item.idd.suffixes[0]?.length < 3
                     ? item.idd.suffixes[0]
                     : null}
                 </p>
@@ -185,9 +227,18 @@ export function SelectCountry() {
 
       <div className="relative">
         <Input
-          className="focus-visible:ring-1 rounded-full pl-15 pr-7 h-12.5 text-[16px]! m-auto border"
+          className={clsx(
+            "focus-visible:ring-1 rounded-full pl-15 pr-7 h-12.5 text-[16px]! m-auto border-2",
+            selectedCountry.numberError && "border-red-500"
+          )}
           type="number"
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) =>
+            setSelectedCountry((prev) => ({
+              ...prev,
+              phoneNumber: e.target.value,
+              numberError: false,
+            }))
+          }
           onKeyDown={(e) => {
             if (e.key === "e" || e.key === "E") {
               e.preventDefault();
