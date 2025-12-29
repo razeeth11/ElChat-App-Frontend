@@ -11,7 +11,7 @@ export function ChatPage() {
       <div className="bg-bg-secondary w-180">
         <Chats />
       </div>
-      <div className="border border-amber-400 w-full">
+      <div className="w-full">
         <Conversations />
       </div>
     </div>
