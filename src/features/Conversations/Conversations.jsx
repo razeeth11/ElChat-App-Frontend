@@ -60,7 +60,8 @@ function ChatMessage({ msg }) {
   return (
     <div
       className={clsx(
-        "flex items-end gap-3 w-fit max-w-[60%] p-2 rounded-sm bg-bg-tertiary",
+        "flex items-end gap-3 w-fit max-w-[60%] p-2 rounded-sm",
+        msg.senderId === "user_2" ? "bg-bg-tertiary" : "bg-bg-secondary",
         msg.senderId === "user_2" && "ml-auto"
       )}
     >
