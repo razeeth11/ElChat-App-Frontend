@@ -8,7 +8,7 @@ export function ChatPage() {
       <div className="w-25 h-screen">
         <SideNavBar />
       </div>
-      <div className="border border-amber-400 w-180">
+      <div className="bg-bg-secondary w-180">
         <Chats />
       </div>
       <div className="border border-amber-400 w-full">

@@ -30,6 +30,9 @@ const topNavList = [
   },
 ];
 
+export const navButtonStyle =
+  "rounded-full cursor-pointer p-5 [&:hover]:bg-bg-tertiary";
+
 export function SideNavBar() {
   const { theme, setTheme } = useTheme();
   return (
@@ -40,7 +43,7 @@ export function SideNavBar() {
             key={index}
             variant="ghost"
             size="icon"
-            className="rounded-full cursor-pointer p-5 [&:hover]:bg-bg-tertiary"
+            className={navButtonStyle}
           >
             <item.icon
               strokeWidth={2.5}
@@ -53,16 +56,12 @@ export function SideNavBar() {
       <div className="flex flex-col items-center gap-2.5 pb-2.5">
         <Button
           variant="ghost"
-          className="rounded-full cursor-pointer p-5 [&:hover]:bg-bg-tertiary"
+          className={navButtonStyle}
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           {theme === "dark" ? <Moon /> : <Sun />}
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full cursor-pointer p-5 [&:hover]:bg-bg-tertiary"
-        >
+        <Button variant="ghost" size="icon" className={navButtonStyle}>
           <Settings strokeWidth={2.5} absoluteStrokeWidth className="size-5" />
         </Button>
         <Avatar className="size-7">
