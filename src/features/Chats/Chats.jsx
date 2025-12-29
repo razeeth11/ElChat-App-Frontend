@@ -49,8 +49,8 @@ export function Chats() {
       </div>
       <ScrollArea className="rounded-md cursor-pointer h-[80vh]">
         <div className="flex flex-col gap-1 overflow-hidden">
-          {Array.from({ length: 20 }).map((i, p) => (
-            <div>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div key={i}>
               <ChatSection />
             </div>
           ))}
