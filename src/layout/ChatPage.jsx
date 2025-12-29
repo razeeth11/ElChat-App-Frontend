@@ -1,3 +1,19 @@
+import { Chats } from "../features/Chats/Chats";
+import { Conversations } from "../features/Conversations/Conversations";
+import { SideNavBar } from "../features/Side-Nav-Section/Side-Nav-Bar";
+
 export function ChatPage() {
-  return <div>Chat Page Component</div>;
+  return (
+    <div className="flex">
+      <div className="w-25 h-screen">
+        <SideNavBar />
+      </div>
+      <div className="border border-amber-400 w-180">
+        <Chats />
+      </div>
+      <div className="border border-amber-400 w-full">
+        <Conversations />
+      </div>
+    </div>
+  );
 }

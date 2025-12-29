@@ -9,7 +9,8 @@ import { MoveLeft } from "lucide-react";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthContext/AuthContent";
 
-export function OTPVerificationPage() {
+export function OTPVerificationPage({ confirmationResult }) {
+  console.log(confirmationResult, "verfiy");
   const { setAuthValue } = useContext(AuthContext);
   return (
     <div className="flex flex-col items-center justify-center gap-10 text-center h-screen">
@@ -24,7 +25,12 @@ export function OTPVerificationPage() {
         <InputOTPDemo />
       </div>
       <div className="flex flex-col gap-2.5">
-        <Button className="cursor-pointer rounded-full">Confirm</Button>
+        <Button
+          className="cursor-pointer rounded-full"
+          onClick={() => setAuthValue("chat-page")}
+        >
+          Confirm
+        </Button>
         <p className="mt-5">Didn't receive the code?</p>
         <Button
           variant="ghost"

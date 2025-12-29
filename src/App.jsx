@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import "./App.css";
 import { AuthContext } from "./AuthContext/AuthContent";
 import { LoginPage } from "./features/Auth/LoginPage";
@@ -10,10 +10,15 @@ export const VERCEL_BASE_URL = import.meta.env.VITE_BASE_VERCEL_URL;
 
 function App() {
   const { authValue } = useContext(AuthContext);
+  const [confirmationResult, setConfirmationResult] = useState(null);
   return (
     <>
-      {authValue === "login-page" && <LoginPage />}
-      {authValue === "verify-otp" && <OTPVerificationPage />}
+      {authValue === "login-page" && (
+        <LoginPage setConfirmationResult={setConfirmationResult} />
+      )}
+      {authValue === "verify-otp" && (
+        <OTPVerificationPage confirmationResult={confirmationResult} />
+      )}
       {authValue === "chat-page" && <ChatPage />}
     </>
   );

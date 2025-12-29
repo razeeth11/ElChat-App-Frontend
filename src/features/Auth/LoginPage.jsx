@@ -1,7 +1,7 @@
 import LOGO from "../../assets/logo.png";
 import CHAT from "../../assets/chat-illustration.png";
 import { Input } from "@/components/ui/input";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   Popover,
   PopoverContent,
@@ -17,8 +17,12 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import clsx from "clsx";
-import { LOCAL_BASE_URL } from "../../App";
+// import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+// import { auth } from "../../firebase";
 
+// let recaptchaVerifier;
+
+// export function LoginPage({ setConfirmationResult }) {
 export function LoginPage() {
   const { theme, setTheme } = useTheme();
   const { setAuthValue } = useContext(AuthContext);
@@ -30,20 +34,28 @@ export function LoginPage() {
     numberError: false,
   });
 
-  const sendOtpMutation = useMutation({
-    mutationFn: (payload) => {
-      return axios.post(`${LOCAL_BASE_URL}/auth/login-otp`, payload);
-    },
+  const handleSendOtp = async () => {
+    setAuthValue("verify-otp");
+    // try {
+    //   if (!recaptchaVerifier) {
+    //     recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+    //       size: "invisible",
+    //     });
+    //   }
 
-    onSuccess: (response) => {
-      toast.success(response.data.message || "OTP sent successfully");
-      setAuthValue("otp-verify");
-    },
+    //   const result = await signInWithPhoneNumber(
+    //     auth,
+    //     `${selectedCountry.code}${selectedCountry.phoneNumber}`,
+    //     recaptchaVerifier
+    //   );
 
-    onError: (error) => {
-      toast.error(error.response.data.message || "Something went wrong");
-    },
-  });
+    //   setConfirmationResult(result);
+    //   setAuthValue("verify-otp");
+    // } catch (err) {
+    //   console.error("Send OTP error:", err);
+    //   toast.error(err.message);
+    // }
+  };
 
   function nextClickHandler() {
     if (
@@ -54,12 +66,7 @@ export function LoginPage() {
       toast.error("Please enter a valid phone number");
       return;
     }
-
-    setAuthValue("verify-otp");
-
-    sendOtpMutation.mutate({
-      phoneNumber: `${selectedCountry.code}${selectedCountry.phoneNumber}`,
-    });
+    handleSendOtp();
   }
 
   return (
@@ -123,6 +130,7 @@ export function LoginPage() {
           </Button>
         </div>
       </div>
+      <div id="recaptcha-container"></div>
     </div>
   );
 }
@@ -132,7 +140,8 @@ export function SelectCountry({ selectedCountry, setSelectedCountry }) {
   const [openCountries, setOpenCountries] = useState(false);
 
   function selectCountryHandler(item) {
-    setSelectedCountry({
+    setSelectedCountry((prev) => ({
+      ...prev,
       name: item.cca3,
       code: `${item.idd.root}${
         item.idd.suffixes?.length === 1 && item.idd.suffixes[0]?.length < 3
@@ -140,7 +149,7 @@ export function SelectCountry({ selectedCountry, setSelectedCountry }) {
           : ""
       }`,
       flag: item.flags.png,
-    });
+    }));
   }
 
   const query = useQuery({
