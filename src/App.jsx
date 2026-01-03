@@ -9,17 +9,17 @@ export const LOCAL_BASE_URL = import.meta.env.VITE_BASE_LOCAL_URL;
 export const VERCEL_BASE_URL = import.meta.env.VITE_BASE_VERCEL_URL;
 
 function App() {
-  const { authValue } = useContext(AuthContext);
+  const { authPage } = useContext(AuthContext);
   const [confirmationResult, setConfirmationResult] = useState(null);
   return (
     <>
-      {authValue === "login-page" && (
+      {authPage === "login-page" && (
         <LoginPage setConfirmationResult={setConfirmationResult} />
       )}
-      {authValue === "verify-otp" && (
+      {authPage === "verify-otp" && (
         <OTPVerificationPage confirmationResult={confirmationResult} />
       )}
-      {authValue === "chat-page" && <ChatPage />}
+      {authPage === "chat-page" && <ChatPage />}
     </>
   );
 }

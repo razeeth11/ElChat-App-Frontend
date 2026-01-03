@@ -25,7 +25,7 @@ import clsx from "clsx";
 // export function LoginPage({ setConfirmationResult }) {
 export function LoginPage() {
   const { theme, setTheme } = useTheme();
-  const { setAuthValue } = useContext(AuthContext);
+  const { setAuthPage } = useContext(AuthContext);
   const [selectedCountry, setSelectedCountry] = useState({
     name: "IND",
     code: "+91",
@@ -35,7 +35,7 @@ export function LoginPage() {
   });
 
   const handleSendOtp = async () => {
-    setAuthValue("verify-otp");
+    setAuthPage("verify-otp");
     // try {
     //   if (!recaptchaVerifier) {
     //     recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
@@ -50,7 +50,7 @@ export function LoginPage() {
     //   );
 
     //   setConfirmationResult(result);
-    //   setAuthValue("verify-otp");
+    //   setAuthPage("verify-otp");
     // } catch (err) {
     //   console.error("Send OTP error:", err);
     //   toast.error(err.message);

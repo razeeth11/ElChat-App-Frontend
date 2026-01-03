@@ -2,10 +2,13 @@ import { useState } from "react";
 import { AuthContext } from "./AuthContent";
 
 export function AuthProvider({ children }) {
-  const [authValue, setAuthValue] = useState("chat-page");
+  const [authPage, setAuthPage] = useState("chat-page");
+  const [authSection, setAuthSection] = useState("chat-section");
 
   return (
-    <AuthContext.Provider value={{ authValue, setAuthValue }}>
+    <AuthContext.Provider
+      value={{ authPage, setAuthPage, authSection, setAuthSection }}
+    >
       {children}
     </AuthContext.Provider>
   );

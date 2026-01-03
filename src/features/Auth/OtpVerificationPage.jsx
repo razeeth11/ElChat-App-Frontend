@@ -11,7 +11,7 @@ import { AuthContext } from "../../AuthContext/AuthContent";
 
 export function OTPVerificationPage({ confirmationResult }) {
   console.log(confirmationResult, "verfiy");
-  const { setAuthValue } = useContext(AuthContext);
+  const { setAuthPage } = useContext(AuthContext);
   return (
     <div className="flex flex-col items-center justify-center gap-10 text-center h-screen">
       <div className="flex flex-col items-center gap-2">
@@ -27,7 +27,7 @@ export function OTPVerificationPage({ confirmationResult }) {
       <div className="flex flex-col gap-2.5">
         <Button
           className="cursor-pointer rounded-full"
-          onClick={() => setAuthValue("chat-page")}
+          onClick={() => setAuthPage("chat-page")}
         >
           Confirm
         </Button>
@@ -35,7 +35,7 @@ export function OTPVerificationPage({ confirmationResult }) {
         <Button
           variant="ghost"
           className="cursor-pointer rounded-full"
-          onClick={() => setAuthValue("login-page")}
+          onClick={() => setAuthPage("login-page")}
         >
           <MoveLeft /> Back
         </Button>
