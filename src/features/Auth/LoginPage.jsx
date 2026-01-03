@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown, Moon, Search, Sun } from "lucide-react";
+import { ChevronDown, Moon, Search, Sun } from "lucide-react";
 import axios from "axios";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContext, useMemo, useState } from "react";
@@ -17,13 +17,8 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import clsx from "clsx";
-// import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-// import { auth } from "../../firebase";
 
-// let recaptchaVerifier;
-
-// export function LoginPage({ setConfirmationResult }) {
-export function LoginPage() {
+export function LoginPage({ setConfirmationResult }) {
   const { theme, setTheme } = useTheme();
   const { setAuthPage } = useContext(AuthContext);
   const [selectedCountry, setSelectedCountry] = useState({
@@ -35,26 +30,14 @@ export function LoginPage() {
   });
 
   const handleSendOtp = async () => {
-    setAuthPage("verify-otp");
-    // try {
-    //   if (!recaptchaVerifier) {
-    //     recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-    //       size: "invisible",
-    //     });
-    //   }
-
-    //   const result = await signInWithPhoneNumber(
-    //     auth,
-    //     `${selectedCountry.code}${selectedCountry.phoneNumber}`,
-    //     recaptchaVerifier
-    //   );
-
-    //   setConfirmationResult(result);
-    //   setAuthPage("verify-otp");
-    // } catch (err) {
-    //   console.error("Send OTP error:", err);
-    //   toast.error(err.message);
-    // }
+    try {
+      const phone = `${selectedCountry.code}${selectedCountry.phoneNumber}`;
+      setConfirmationResult();
+      setAuthPage("verify-otp");
+    } catch (err) {
+      console.error("Send OTP error:", err);
+      toast.error(err.message);
+    }
   };
 
   function nextClickHandler() {
@@ -124,13 +107,13 @@ export function LoginPage() {
           </div>
           <Button
             className="p-5 w-30 rounded-full cursor-pointer"
+            id="sign-in-button"
             onClick={nextClickHandler}
           >
             Next
           </Button>
         </div>
       </div>
-      <div id="recaptcha-container"></div>
     </div>
   );
 }
@@ -227,7 +210,6 @@ export function SelectCountry({ selectedCountry, setSelectedCountry }) {
                     ? item.idd.suffixes[0]
                     : null}
                 </p>
-                {/* <Check /> */}
               </Button>
             ))}
           </ScrollArea>
