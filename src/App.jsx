@@ -10,13 +10,13 @@ export const VERCEL_BASE_URL = import.meta.env.VITE_BASE_VERCEL_URL;
 
 function App() {
   const { authPage } = useContext(AuthContext);
-  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [confirmationResult, setConfirmationResult] = useState({});
   return (
     <>
       {authPage === "login-page" && (
         <LoginPage setConfirmationResult={setConfirmationResult} />
       )}
-      {authPage === "verify-otp" && (
+      {authPage === "verify-page" && (
         <OTPVerificationPage confirmationResult={confirmationResult} />
       )}
       {authPage === "chat-page" && <ChatPage />}

@@ -6,12 +6,53 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { MoveLeft } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../AuthContext/AuthContent";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { LOCAL_BASE_URL } from "../../App";
 
 export function OTPVerificationPage({ confirmationResult }) {
-  console.log(confirmationResult, "verfiy");
+  const [inputValue, setInputValue] = useState("");
   const { setAuthPage } = useContext(AuthContext);
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: async (payload) => {
+      const result = await axios.post(
+        `${LOCAL_BASE_URL}/auth/verify-otp`,
+        payload
+      );
+      return result.data;
+    },
+
+    onSuccess: (response) => {
+      const { message } = response;
+      toast.success(`${message}`);
+      setAuthPage("chat-page");
+      localStorage.setItem("authPage", "chat-page");
+    },
+
+    onError: (err) => {
+      toast.error(`${err.response.data.message}`);
+    },
+  });
+
+  function verifyOtpHandler() {
+    if (inputValue.length < 3) {
+      toast.warning("Enter the valid otp!");
+      return;
+    }
+
+    const payload = {
+      authId: localStorage.getItem("authId"),
+      otp: inputValue,
+    };
+
+    verifyOtpMutation.mutate(payload);
+  }
+
   return (
     <div className="flex flex-col items-center justify-center gap-10 text-center h-screen">
       <div className="flex flex-col items-center gap-2">
@@ -19,15 +60,16 @@ export function OTPVerificationPage({ confirmationResult }) {
         <p className="text-lg">
           Please enter the six digit verification code sent
         </p>
-        <p>+91 6383884482</p>
+        <p>{confirmationResult.phone || ""}</p>
+        <span className="opacity-50">OTP : {confirmationResult.OTP}</span>
       </div>
       <div>
-        <InputOTPDemo />
+        <InputOTPDemo setInputValue={setInputValue} />
       </div>
       <div className="flex flex-col gap-2.5">
         <Button
           className="cursor-pointer rounded-full"
-          onClick={() => setAuthPage("chat-page")}
+          onClick={verifyOtpHandler}
         >
           Confirm
         </Button>
@@ -35,7 +77,10 @@ export function OTPVerificationPage({ confirmationResult }) {
         <Button
           variant="ghost"
           className="cursor-pointer rounded-full"
-          onClick={() => setAuthPage("login-page")}
+          onClick={() => {
+            setAuthPage("login-page");
+            localStorage.setItem("authPage", "login-page");
+          }}
         >
           <MoveLeft /> Back
         </Button>
@@ -44,11 +89,15 @@ export function OTPVerificationPage({ confirmationResult }) {
   );
 }
 
-export function InputOTPDemo() {
+export function InputOTPDemo({ setInputValue }) {
   const styles = "size-13 text-xl!";
 
   return (
-    <InputOTP maxLength={6}>
+    <InputOTP
+      maxLength={6}
+      pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+      onChange={(value) => setInputValue(value)}
+    >
       <InputOTPGroup>
         <InputOTPSlot index={0} className={styles} />
         <InputOTPSlot index={1} className={styles} />

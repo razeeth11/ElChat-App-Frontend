@@ -1,7 +1,7 @@
 import LOGO from "../../assets/logo.png";
 import CHAT from "../../assets/chat-illustration.png";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Popover,
   PopoverContent,
@@ -17,6 +17,7 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import clsx from "clsx";
+import { LOCAL_BASE_URL } from "../../App";
 
 export function LoginPage({ setConfirmationResult }) {
   const { theme, setTheme } = useTheme();
@@ -29,16 +30,29 @@ export function LoginPage({ setConfirmationResult }) {
     numberError: false,
   });
 
-  const handleSendOtp = async () => {
-    try {
-      const phone = `${selectedCountry.code}${selectedCountry.phoneNumber}`;
-      setConfirmationResult();
-      setAuthPage("verify-otp");
-    } catch (err) {
-      console.error("Send OTP error:", err);
-      toast.error(err.message);
-    }
-  };
+  const phone = `${selectedCountry.code}${selectedCountry.phoneNumber}`;
+  const sendOTPMutation = useMutation({
+    mutationFn: async () => {
+      const result = await axios.post(
+        `${LOCAL_BASE_URL}/auth/login-otp`,
+        phone
+      );
+      return result;
+    },
+
+    onSuccess: (response) => {
+      const { message, OTP, authId } = response.data;
+      toast.success(`${message} - ${OTP}`);
+      setConfirmationResult({ phone, OTP });
+      setAuthPage("verify-page");
+      localStorage.setItem("authId", authId);
+      localStorage.setItem("authPage", "verify-page");
+    },
+
+    onError: (err) => {
+      toast.error(`${err.response.data.message}`);
+    },
+  });
 
   function nextClickHandler() {
     if (
@@ -49,7 +63,7 @@ export function LoginPage({ setConfirmationResult }) {
       toast.error("Please enter a valid phone number");
       return;
     }
-    handleSendOtp();
+    sendOTPMutation.mutate();
   }
 
   return (
