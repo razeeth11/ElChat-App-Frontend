@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthContext/AuthContent";
 import { LoginPage } from "./features/Auth/LoginPage";
 import { OTPVerificationPage } from "./features/Auth/OtpVerificationPage";
 import { ChatPage } from "./layout/ChatPage";
+import { SignupPage } from "./features/Auth/SignupPage";
 
 export const LOCAL_BASE_URL = import.meta.env.VITE_BASE_LOCAL_URL;
 export const VERCEL_BASE_URL = import.meta.env.VITE_BASE_VERCEL_URL;
@@ -20,6 +21,7 @@ function App() {
         <OTPVerificationPage confirmationResult={confirmationResult} />
       )}
       {authPage === "chat-page" && <ChatPage />}
+      {authPage === "signup-page" && <SignupPage />}
     </>
   );
 }

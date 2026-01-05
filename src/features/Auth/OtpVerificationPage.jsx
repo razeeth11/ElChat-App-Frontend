@@ -28,10 +28,16 @@ export function OTPVerificationPage({ confirmationResult }) {
     },
 
     onSuccess: (response) => {
+      console.log(response);
       const { message } = response;
       toast.success(`${message}`);
-      setAuthPage("chat-page");
-      localStorage.setItem("authPage", "chat-page");
+      if (response.newUser) {
+        setAuthPage("signup-page");
+        localStorage.setItem("authPage", "login-page");
+      } else {
+        setAuthPage("chat-page");
+        localStorage.setItem("authPage", "chat-page");
+      }
     },
 
     onError: (err) => {
@@ -47,6 +53,7 @@ export function OTPVerificationPage({ confirmationResult }) {
 
     const payload = {
       authId: localStorage.getItem("authId"),
+      phoneNumber: confirmationResult.phone,
       otp: inputValue,
     };
 

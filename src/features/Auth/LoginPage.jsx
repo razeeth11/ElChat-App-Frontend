@@ -33,15 +33,14 @@ export function LoginPage({ setConfirmationResult }) {
   const phone = `${selectedCountry.code}${selectedCountry.phoneNumber}`;
   const sendOTPMutation = useMutation({
     mutationFn: async () => {
-      const result = await axios.post(
-        `${LOCAL_BASE_URL}/auth/login-otp`,
-        phone
-      );
-      return result;
+      const result = await axios.post(`${LOCAL_BASE_URL}/auth/login-otp`, {
+        phoneNumber: phone,
+      });
+      return result.data;
     },
 
     onSuccess: (response) => {
-      const { message, OTP, authId } = response.data;
+      const { message, OTP, authId } = response;
       toast.success(`${message} - ${OTP}`);
       setConfirmationResult({ phone, OTP });
       setAuthPage("verify-page");
@@ -50,7 +49,7 @@ export function LoginPage({ setConfirmationResult }) {
     },
 
     onError: (err) => {
-      toast.error(`${err.response.data.message}`);
+      toast.error(`${err.response.data.message || "Internal server error!"}`);
     },
   });
 
