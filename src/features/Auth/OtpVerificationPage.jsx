@@ -13,9 +13,11 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_BASE_URL } from "../../App";
+import { Spinner } from "../../components/ui/spinner";
 
 export function OTPVerificationPage({ confirmationResult }) {
   const [inputValue, setInputValue] = useState("");
+  const [loader, setLoader] = useState(false);
   const { setAuthPage } = useContext(AuthContext);
 
   const verifyOtpMutation = useMutation({
@@ -43,6 +45,10 @@ export function OTPVerificationPage({ confirmationResult }) {
     onError: (err) => {
       toast.error(`${err.response.data.message}`);
     },
+
+    onSettled: () => {
+      setLoader(false);
+    },
   });
 
   function verifyOtpHandler() {
@@ -56,8 +62,11 @@ export function OTPVerificationPage({ confirmationResult }) {
       phoneNumber: confirmationResult.phone,
       otp: inputValue,
     };
+    setLoader(true);
 
-    verifyOtpMutation.mutate(payload);
+    setTimeout(() => {
+      verifyOtpMutation.mutate(payload);
+    }, 3000);
   }
 
   return (
@@ -76,9 +85,11 @@ export function OTPVerificationPage({ confirmationResult }) {
       <div className="flex flex-col gap-2.5">
         <Button
           className="cursor-pointer rounded-full"
+          disabled={loader}
           onClick={verifyOtpHandler}
         >
           Confirm
+          {loader && <Spinner />}
         </Button>
         <p className="mt-5">Didn't receive the code?</p>
         <Button

@@ -18,9 +18,11 @@ import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import clsx from "clsx";
 import { LOCAL_BASE_URL } from "../../App";
+import { Spinner } from "../../components/ui/spinner";
 
 export function LoginPage({ setConfirmationResult }) {
   const { theme, setTheme } = useTheme();
+  const [loader, setLoader] = useState(false);
   const { setAuthPage } = useContext(AuthContext);
   const [selectedCountry, setSelectedCountry] = useState({
     name: "IND",
@@ -51,6 +53,10 @@ export function LoginPage({ setConfirmationResult }) {
     onError: (err) => {
       toast.error(`${err.response.data.message || "Internal server error!"}`);
     },
+
+    onSettled: () => {
+      setLoader(false);
+    },
   });
 
   function nextClickHandler() {
@@ -62,7 +68,12 @@ export function LoginPage({ setConfirmationResult }) {
       toast.error("Please enter a valid phone number");
       return;
     }
-    sendOTPMutation.mutate();
+
+    setLoader(true);
+
+    setTimeout(() => {
+      sendOTPMutation.mutate();
+    }, 3000);
   }
 
   return (
@@ -121,9 +132,11 @@ export function LoginPage({ setConfirmationResult }) {
           <Button
             className="p-5 w-30 rounded-full cursor-pointer"
             id="sign-in-button"
+            disabled={loader}
             onClick={nextClickHandler}
           >
             Next
+            {loader && <Spinner />}
           </Button>
         </div>
       </div>
