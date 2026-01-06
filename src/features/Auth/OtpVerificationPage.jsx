@@ -37,6 +37,7 @@ export function OTPVerificationPage({ confirmationResult }) {
         localStorage.setItem("authPage", "login-page");
       } else {
         setAuthPage("chat-page");
+        localStorage.setItem("userId", response.userId);
         localStorage.setItem("authPage", "chat-page");
       }
     },
