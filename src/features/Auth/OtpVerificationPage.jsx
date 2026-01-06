@@ -30,7 +30,6 @@ export function OTPVerificationPage({ confirmationResult }) {
     },
 
     onSuccess: (response) => {
-      console.log(response);
       const { message } = response;
       toast.success(`${message}`);
       if (response.newUser) {
@@ -80,7 +79,11 @@ export function OTPVerificationPage({ confirmationResult }) {
         <span className="opacity-50">OTP : {confirmationResult.OTP}</span>
       </div>
       <div>
-        <InputOTPDemo setInputValue={setInputValue} />
+        <InputOTPDemo
+          setInputValue={setInputValue}
+          verifyOtpHandler={verifyOtpHandler}
+          loader={loader}
+        />
       </div>
       <div className="flex flex-col gap-2.5">
         <Button
@@ -107,14 +110,20 @@ export function OTPVerificationPage({ confirmationResult }) {
   );
 }
 
-export function InputOTPDemo({ setInputValue }) {
+export function InputOTPDemo({ setInputValue, verifyOtpHandler, loader }) {
   const styles = "size-13 text-xl!";
 
   return (
     <InputOTP
+      disabled={loader}
       maxLength={6}
       pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
       onChange={(value) => setInputValue(value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          verifyOtpHandler();
+        }
+      }}
     >
       <InputOTPGroup>
         <InputOTPSlot index={0} className={styles} />

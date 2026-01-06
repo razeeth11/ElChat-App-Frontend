@@ -17,19 +17,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CameraIcon, CircleUser } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { LOCAL_BASE_URL } from "../App";
 import clsx from "clsx";
+import { toast } from "sonner";
+import { AuthContext } from "../AuthContext/AuthContent";
+import { Spinner } from "./ui/spinner";
 
 export function SignupForm({ userDetails, setUserDetails }) {
+  const { setAuthPage } = useContext(AuthContext);
+  const [loader, setLoader] = useState(false);
   const [hoverState, setHoverState] = useState(false);
   const [userError, setUserError] = useState(false);
 
-  const saveuserMutation = useMutation({
-    mutationFn: async () => {
-      const result = await axios.post(`${LOCAL_BASE_URL}/saveUser`, payload);
+  const saveUserMutation = useMutation({
+    mutationFn: async (payload) => {
+      const result = await axios.post(
+        `${LOCAL_BASE_URL}/user/createUser`,
+        payload
+      );
       return result.data;
+    },
+
+    onSuccess: (response) => {
+      toast.success(response.message || "User saved successfully");
+      setAuthPage("chat-page");
+      localStorage.setItem("userId", response.userId);
+      localStorage.setItem("authPage", "chat-page");
+    },
+
+    onError: (err) => {
+      toast.error(err.response.data.message || "Internal server error");
+    },
+
+    onSettled: () => {
+      setLoader(false);
     },
   });
 
@@ -39,7 +62,16 @@ export function SignupForm({ userDetails, setUserDetails }) {
       return;
     }
 
-    console.log(userDetails);
+    const formData = new FormData();
+
+    const { displayName, about, phoneNumber, avatarFile } = userDetails;
+
+    formData.append("displayName", displayName);
+    formData.append("about", about);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("avatarUrl", avatarFile);
+    setLoader(true);
+    saveUserMutation.mutate(formData);
   }
 
   return (
@@ -57,17 +89,30 @@ export function SignupForm({ userDetails, setUserDetails }) {
             onMouseLeave={() => setHoverState(false)}
             className="size-30 rounded-full m-auto my-5 relative"
           >
-            <Avatar className="size-30">
-              <AvatarImage src={userDetails.profileImg} />
+            <Avatar className="size-30 bg-bg-primary">
+              <AvatarImage
+                src={userDetails.avatarUrl}
+                className="object-cover"
+              />
               {!hoverState && (
-                <AvatarFallback>
+                <AvatarFallback className="bg-bg-primary">
                   <CircleUser size={30} />
                 </AvatarFallback>
               )}
             </Avatar>
             {hoverState && (
               <label className="border size-30 rounded-full m-auto absolute top-0 flex items-center justify-center cursor-pointer">
-                <input type="file" className="hidden" />
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={(e) =>
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      avatarUrl: URL.createObjectURL(e.target.files[0]),
+                      avatarFile: e.target.files[0],
+                    }))
+                  }
+                />
                 <CameraIcon />
               </label>
             )}
@@ -111,7 +156,10 @@ export function SignupForm({ userDetails, setUserDetails }) {
             </FieldDescription>
           </Field>
           <FieldGroup>
-            <Button onClick={createUserHandler}>Create Account</Button>
+            <Button disabled={loader} onClick={createUserHandler}>
+              Create Account
+              {loader && <Spinner />}
+            </Button>
           </FieldGroup>
         </FieldGroup>
       </CardContent>

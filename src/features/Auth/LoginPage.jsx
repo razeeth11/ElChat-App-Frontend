@@ -127,6 +127,7 @@ export function LoginPage({ setConfirmationResult }) {
             <SelectCountry
               selectedCountry={selectedCountry}
               setSelectedCountry={setSelectedCountry}
+              loader={loader}
             />
           </div>
           <Button
@@ -144,7 +145,7 @@ export function LoginPage({ setConfirmationResult }) {
   );
 }
 
-export function SelectCountry({ selectedCountry, setSelectedCountry }) {
+export function SelectCountry({ selectedCountry, setSelectedCountry, loader }) {
   const [search, setSearch] = useState("");
   const [openCountries, setOpenCountries] = useState(false);
 
@@ -184,6 +185,7 @@ export function SelectCountry({ selectedCountry, setSelectedCountry }) {
           <Button
             variant="outline"
             className="w-80 px-5 py-6 rounded-full cursor-pointer"
+            disabled={loader}
             onClick={() => setOpenCountries((prev) => !prev)}
           >
             {selectedCountry.flag && (
@@ -244,6 +246,7 @@ export function SelectCountry({ selectedCountry, setSelectedCountry }) {
 
       <div className="relative">
         <Input
+          disabled={loader}
           className={clsx(
             "focus-visible:ring-1 rounded-full pl-15 pr-7 h-12.5 text-[16px]! m-auto border-2",
             selectedCountry.numberError && "border-red-500"

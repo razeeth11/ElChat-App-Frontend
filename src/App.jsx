@@ -21,7 +21,9 @@ function App() {
         <OTPVerificationPage confirmationResult={confirmationResult} />
       )}
       {authPage === "chat-page" && <ChatPage />}
-      {authPage === "signup-page" && <SignupPage />}
+      {authPage === "signup-page" && (
+        <SignupPage confirmationResult={confirmationResult} />
+      )}
     </>
   );
 }

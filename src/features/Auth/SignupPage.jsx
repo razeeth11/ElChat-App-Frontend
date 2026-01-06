@@ -1,11 +1,13 @@
 import { SignupForm } from "@/components/signup-form";
 import { useState } from "react";
 
-export function SignupPage() {
+export function SignupPage({ confirmationResult }) {
   const [userDetails, setUserDetails] = useState({
     displayName: "",
     about: "I'm busy right now!",
-    profileImg: "",
+    avatarUrl: "",
+    avatarFile: "",
+    phoneNumber: confirmationResult.phone,
   });
 
   return (
