@@ -13,15 +13,13 @@ import axios from "axios";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContext, useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import clsx from "clsx";
-import { LOCAL_BASE_URL } from "../../App";
+import { displayFlexRow, LOCAL_BASE_URL } from "../../App";
 import { Spinner } from "../../components/ui/spinner";
 
 export function LoginPage({ setConfirmationResult }) {
-  const { theme, setTheme } = useTheme();
   const [loader, setLoader] = useState(false);
   const { setAuthPage } = useContext(AuthContext);
   const [selectedCountry, setSelectedCountry] = useState({
@@ -47,7 +45,6 @@ export function LoginPage({ setConfirmationResult }) {
       setConfirmationResult({ phone, OTP });
       setAuthPage("verify-page");
       localStorage.setItem("authId", authId);
-      localStorage.setItem("authPage", "verify-page");
     },
 
     onError: (err) => {
@@ -73,37 +70,32 @@ export function LoginPage({ setConfirmationResult }) {
 
     setTimeout(() => {
       sendOTPMutation.mutate();
-    }, 3000);
+    }, 2000);
   }
 
   return (
-    <div className="h-screen w-full px-5 py-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 p-2.5">
+    <div className="h-screen w-full px-5 py-2 bg-[#161717] select-none">
+      <div className={`${displayFlexRow} justify-between`}>
+        <div className={`${displayFlexRow} gap-2 p-2.5`}>
           <img
             src={LOGO}
             alt="ElChat Logo"
             loading="lazy"
-            className="w-8 h-8"
+            className="w-8 h-8 pointer-events-none"
           />
           <h2 className="font-medium">ElChat App</h2>
         </div>
-        <Button
-          variant="outline"
-          className="cursor-pointer"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        >
-          {theme === "dark" ? <Moon /> : <Sun />}
-        </Button>
       </div>
       <div className="flex flex-col gap-5 m-auto max-w-200 h-150 mt-30">
-        <div className="flex items-center justify-between gap-2.5 p-5 rounded-2xl border-2 bg-bg-secondary">
-          <div className="flex items-center gap-5">
+        <div
+          className={`${displayFlexRow} justify-between gap-2.5 p-5 rounded-2xl border-2 bg-[#2e2f2f]`}
+        >
+          <div className={`${displayFlexRow} gap-5`}>
             <img
               src={CHAT}
               alt="ElChat Logo"
               loading="lazy"
-              className="hidden md:block md:w-20 md:h-15 rounded-2xl"
+              className="hidden md:block md:w-20 md:h-15 rounded-2xl pointer-events-none"
             />
             <div>
               <h3 className="font-medium">Use ChatApp on Desktop</h3>
@@ -116,7 +108,7 @@ export function LoginPage({ setConfirmationResult }) {
             Learn More
           </Button>
         </div>
-        <div className="flex flex-col justify-center items-center gap-12 text-center p-7 rounded-2xl border-2 bg-bg-secondary">
+        <div className="flex flex-col justify-center items-center gap-12 text-center p-7 rounded-2xl border-2 bg-[#2e2f2f]">
           <div>
             <h1 className="text-2xl md:text-4xl">Enter phone number</h1>
             <p className="text-sm md:text-xl mt-2.5">
@@ -128,6 +120,7 @@ export function LoginPage({ setConfirmationResult }) {
               selectedCountry={selectedCountry}
               setSelectedCountry={setSelectedCountry}
               loader={loader}
+              nextClickHandler={nextClickHandler}
             />
           </div>
           <Button
@@ -145,7 +138,12 @@ export function LoginPage({ setConfirmationResult }) {
   );
 }
 
-export function SelectCountry({ selectedCountry, setSelectedCountry, loader }) {
+export function SelectCountry({
+  selectedCountry,
+  setSelectedCountry,
+  loader,
+  nextClickHandler,
+}) {
   const [search, setSearch] = useState("");
   const [openCountries, setOpenCountries] = useState(false);
 
@@ -200,7 +198,7 @@ export function SelectCountry({ selectedCountry, setSelectedCountry, loader }) {
             <ChevronDown />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 bg-bg-secondary">
+        <PopoverContent className="w-80 bg-[#161717]">
           <div className="relative">
             <Input
               className="focus-visible:ring-1 border-none rounded-full pl-11 pr-7 h-10"
@@ -262,6 +260,10 @@ export function SelectCountry({ selectedCountry, setSelectedCountry, loader }) {
           onKeyDown={(e) => {
             if (e.key === "e" || e.key === "E") {
               e.preventDefault();
+              return;
+            }
+            if (e.key === "Enter") {
+              nextClickHandler();
             }
           }}
         />
@@ -273,7 +275,7 @@ export function SelectCountry({ selectedCountry, setSelectedCountry, loader }) {
 
 export function SkeletonDemo() {
   return (
-    <div className="flex items-center justify-between py-3 px-5">
+    <div className={`${displayFlexRow} justify-between py-3 px-5`}>
       <Skeleton className="h-6 w-8 rounded-none" />
       <Skeleton className="h-4 w-15" />
       <Skeleton className="h-4 w-15" />

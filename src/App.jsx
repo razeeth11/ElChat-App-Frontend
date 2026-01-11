@@ -9,6 +9,9 @@ import { SignupPage } from "./features/Auth/SignupPage";
 export const LOCAL_BASE_URL = import.meta.env.VITE_BASE_LOCAL_URL;
 export const VERCEL_BASE_URL = import.meta.env.VITE_BASE_VERCEL_URL;
 
+export const displayFlexRow = "flex flex-row items-center";
+export const displayFlexCol = "flex flex-col";
+
 function App() {
   const { authPage } = useContext(AuthContext);
   const [confirmationResult, setConfirmationResult] = useState({});

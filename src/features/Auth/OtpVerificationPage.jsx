@@ -5,14 +5,14 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
-import { MoveLeft } from "lucide-react";
+import { SquarePen } from "lucide-react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../AuthContext/AuthContent";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { LOCAL_BASE_URL } from "../../App";
+import { displayFlexRow, LOCAL_BASE_URL } from "../../App";
 import { Spinner } from "../../components/ui/spinner";
 
 export function OTPVerificationPage({ confirmationResult }) {
@@ -68,13 +68,28 @@ export function OTPVerificationPage({ confirmationResult }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-10 text-center h-screen">
+    <div className="flex flex-col items-center justify-center gap-10 text-center h-screen bg-[#161717] select-none">
       <div className="flex flex-col items-center gap-2">
         <h2 className="text-4xl">Check your mobile</h2>
         <p className="text-lg">
-          Please enter the six digit verification code sent
+          Please enter the six digit verification code sent to
         </p>
-        <p>{confirmationResult.phone || ""}</p>
+        <p className={displayFlexRow}>
+          {confirmationResult.phone || ""}{" "}
+          <span>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="cursor-pointer rounded-full"
+              disabled={loader}
+              onClick={() => {
+                setAuthPage("login-page");
+              }}
+            >
+              <SquarePen color="#7585ff" />
+            </Button>
+          </span>{" "}
+        </p>
         <span className="opacity-50">OTP : {confirmationResult.OTP}</span>
       </div>
       <div>
@@ -92,17 +107,6 @@ export function OTPVerificationPage({ confirmationResult }) {
         >
           Confirm
           {loader && <Spinner />}
-        </Button>
-        <p className="mt-5">Didn't receive the code?</p>
-        <Button
-          variant="ghost"
-          className="cursor-pointer rounded-full"
-          onClick={() => {
-            setAuthPage("login-page");
-            localStorage.setItem("authPage", "login-page");
-          }}
-        >
-          <MoveLeft /> Back
         </Button>
       </div>
     </div>

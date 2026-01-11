@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")).render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <App />
-          <Toaster position="top-center" className="bg-bg-tertiary" />
+          <Toaster position="top-center" className="bg-[#161717]" />
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
