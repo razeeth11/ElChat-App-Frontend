@@ -30,8 +30,6 @@ export function OTPVerificationPage({ confirmationResult }) {
     },
 
     onSuccess: (response) => {
-      const { message } = response;
-      toast.success(`${message}`);
       if (response.newUser) {
         setAuthPage("signup-page");
         localStorage.setItem("authPage", "login-page");

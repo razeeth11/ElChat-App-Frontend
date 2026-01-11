@@ -4,14 +4,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AuthContext } from "../../AuthContext/AuthContent";
+import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { LOCAL_BASE_URL } from "../../App";
 
 export function Chats() {
+  const { setAuthSection } = useContext(AuthContext);
+
+  const userId = localStorage.getItem("userId");
+
+  const { data } = useQuery({
+    queryKey: ["chats", userId],
+    queryFn: async () => {
+      const result = await axios.get(`${LOCAL_BASE_URL}/chat/${userId}`);
+      return result.data;
+    },
+  });
+
   return (
     <div className="flex flex-col gap-2.5 px-5 py-2.5">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-medium">ElChatApp</h2>
         <div className="flex items-center gap-2.5">
-          <Button variant="ghost" size="icon" className={navButtonStyle}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={navButtonStyle}
+            onClick={() => setAuthSection("all-users")}
+          >
             <MessageSquarePlus
               strokeWidth={2.5}
               absoluteStrokeWidth
@@ -49,18 +71,19 @@ export function Chats() {
       </div>
       <ScrollArea className="rounded-md cursor-pointer h-[80vh]">
         <div className="flex flex-col gap-1 overflow-hidden">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {data?.chats.map((_, i) => (
             <div key={i}>
               <ChatSection />
             </div>
           ))}
         </div>
+        {data?.chats.length === 0 && <div>No Chats</div>}
       </ScrollArea>
     </div>
   );
 }
 
-function ChatSection() {
+export function ChatSection() {
   return (
     <div className="flex items-start gap-2.5 [&:hover]:bg-bg-tertiary p-2.5 rounded-sm">
       <div>
