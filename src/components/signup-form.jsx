@@ -45,6 +45,8 @@ export function SignupForm({ userDetails, setUserDetails }) {
       setAuthPage("chat-page");
       localStorage.setItem("userId", response.userId);
       localStorage.setItem("authPage", "chat-page");
+      localStorage.setItem("token", response.token);
+      localStorage.removeItem("authId");
     },
 
     onError: (err) => {
@@ -70,12 +72,14 @@ export function SignupForm({ userDetails, setUserDetails }) {
     formData.append("about", about);
     formData.append("phoneNumber", phoneNumber);
     formData.append("avatarUrl", avatarFile);
+    formData.append("authId", localStorage.getItem("authId"));
+
     setLoader(true);
     saveUserMutation.mutate(formData);
   }
 
   return (
-    <Card className="bg-bg-secondary w-[30%] mt-[10%]">
+    <Card className="w-125 m-5 bg-[#2e2f2f]">
       <CardHeader className="text-center">
         <CardTitle>Create an account with ELChat</CardTitle>
         <CardDescription>
@@ -89,33 +93,39 @@ export function SignupForm({ userDetails, setUserDetails }) {
             onMouseLeave={() => setHoverState(false)}
             className="size-30 rounded-full m-auto my-5 relative"
           >
-            <Avatar className="size-30 bg-bg-primary">
+            <Avatar className="size-30 bg-[#2e2f2f]">
               <AvatarImage
                 src={userDetails.avatarUrl}
                 className="object-cover"
               />
-              {!hoverState && (
-                <AvatarFallback className="bg-bg-primary">
-                  <CircleUser size={30} />
-                </AvatarFallback>
-              )}
+              <AvatarFallback className="bg-[#2e2f2f] border border-white">
+                <CircleUser size={30} />
+              </AvatarFallback>
             </Avatar>
-            {hoverState && (
-              <label className="border size-30 rounded-full m-auto absolute top-0 flex items-center justify-center cursor-pointer">
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={(e) =>
+            <label className="border size-10 rounded-full m-auto absolute right-0 bottom-0 flex items-center justify-center cursor-pointer">
+              <input
+                type="file"
+                className="hidden"
+                onChange={(e) => {
+                  let file = e.target.files[0];
+                  if (
+                    file.type === "image/png" ||
+                    file.type === "image/jpeg" ||
+                    file.type === "image/jpg"
+                  ) {
                     setUserDetails((prev) => ({
                       ...prev,
                       avatarUrl: URL.createObjectURL(e.target.files[0]),
                       avatarFile: e.target.files[0],
-                    }))
+                    }));
+                    return;
                   }
-                />
-                <CameraIcon />
-              </label>
-            )}
+                  file = "";
+                  toast.warning("Allowed image format - 'jpg/png'!");
+                }}
+              />
+              <CameraIcon />
+            </label>
           </div>
           <Field>
             <FieldLabel htmlFor="name">Full Name</FieldLabel>
