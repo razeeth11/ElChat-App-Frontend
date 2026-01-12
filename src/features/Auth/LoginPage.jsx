@@ -70,7 +70,7 @@ export function LoginPage({ setConfirmationResult }) {
 
     setTimeout(() => {
       sendOTPMutation.mutate();
-    }, 2000);
+    }, 1500);
   }
 
   return (

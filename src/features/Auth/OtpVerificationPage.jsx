@@ -32,11 +32,12 @@ export function OTPVerificationPage({ confirmationResult }) {
     onSuccess: (response) => {
       if (response.newUser) {
         setAuthPage("signup-page");
-        localStorage.setItem("authPage", "login-page");
       } else {
         setAuthPage("chat-page");
         localStorage.setItem("userId", response.userId);
+        localStorage.setItem("token", response.token);
         localStorage.setItem("authPage", "chat-page");
+        localStorage.removeItem("authId");
       }
     },
 
@@ -64,7 +65,7 @@ export function OTPVerificationPage({ confirmationResult }) {
 
     setTimeout(() => {
       verifyOtpMutation.mutate(payload);
-    }, 3000);
+    }, 1500);
   }
 
   return (

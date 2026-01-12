@@ -11,7 +11,7 @@ export function SignupPage({ confirmationResult }) {
   });
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center h-screen bg-[#161717] select-none">
       <SignupForm userDetails={userDetails} setUserDetails={setUserDetails} />
     </div>
   );
