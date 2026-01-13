@@ -13,19 +13,18 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_BASE_URL } from "../../App";
 import dayjs from "dayjs";
+import { queryClient } from "../../main";
 
 export function Conversations() {
-  const { conversationId, receiverId } = useContext(AuthContext);
+  const { userId, conversationId, receiverId } = useContext(AuthContext);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-
-  const currentUserId = localStorage.getItem("userId");
 
   const userDetailsQuery = useQuery({
     queryKey: ["selectedUserDetails", receiverId],
     queryFn: async ({ queryKey }) => {
       const result = await axios.get(`${LOCAL_BASE_URL}/user/${queryKey[1]}`);
-      return result.data;
+      return result.data.userDetails;
     },
     enabled: !!receiverId,
   });
@@ -58,7 +57,7 @@ export function Conversations() {
     };
     socket.connect();
 
-    socket.emit("register-user", currentUserId);
+    socket.emit("register-user", userId);
 
     socket.on("receive-message", handleReceiveMessage);
 
@@ -73,7 +72,7 @@ export function Conversations() {
     const payload = {
       conversationId,
       receiverId,
-      senderId: currentUserId,
+      senderId: userId,
       text: message,
       sendedAt: dayjs().format("YYYY-MM-DD HH:mm"),
     };
@@ -82,6 +81,10 @@ export function Conversations() {
 
     socket.emit("send-message", payload);
     setMessage("");
+
+    setTimeout(() => {
+      queryClient.invalidateQueries(["chats"]);
+    }, 2000);
   }
 
   return (
@@ -91,13 +94,13 @@ export function Conversations() {
           <div className="flex items-start gap-2.5 p-2">
             <div>
               <Avatar className="size-10">
-                <AvatarImage src={userDetails?.userDetails.avatarUrl} />
+                <AvatarImage src={userDetails?.avatarUrl} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </div>
             <div>
-              <h3 className="">{userDetails?.userDetails.displayName}</h3>
-              <p className="text-sm">{userDetails?.userDetails.about}</p>
+              <h3 className="">{userDetails?.displayName}</h3>
+              <p className="text-sm">{userDetails?.about}</p>
             </div>
             <div className="ml-auto">
               <Button variant="ghost" className={navButtonStyle}>
@@ -113,7 +116,7 @@ export function Conversations() {
           <ScrollArea className="cursor-pointer h-[92vh] p-5">
             <div className="flex flex-col gap-2.5 pb-15">
               {messages.map((msg, i) => (
-                <ChatMessage key={i} msg={msg} currentUserId={currentUserId} />
+                <ChatMessage key={i} msg={msg} userId={userId} />
               ))}
             </div>
           </ScrollArea>
@@ -127,6 +130,11 @@ export function Conversations() {
                 className="focus-visible:ring-0 border-none h-12 bg-bg-tertiary"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                }}
               />
             </div>
             <Button
@@ -145,13 +153,13 @@ export function Conversations() {
   );
 }
 
-function ChatMessage({ msg, currentUserId }) {
+function ChatMessage({ msg, userId }) {
   return (
     <div
       className={clsx(
         "flex items-end gap-3 w-fit max-w-[60%] p-2 rounded-sm",
-        msg.senderId === currentUserId ? "bg-bg-tertiary" : "bg-bg-secondary",
-        msg.senderId === currentUserId && "ml-auto"
+        msg.senderId === userId ? "bg-bg-tertiary" : "bg-bg-secondary",
+        msg.senderId === userId && "ml-auto"
       )}
     >
       <div>{msg.text}</div>

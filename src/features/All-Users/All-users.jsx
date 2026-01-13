@@ -7,15 +7,11 @@ import axios from "axios";
 import { LOCAL_BASE_URL } from "../../App";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "../../AuthContext/AuthContent";
+import { toast } from "sonner";
 
 export function AllUsers() {
-  const { setConversationId, setAuthSection, setReceiverId } =
+  const { userId, setConversationId, setAuthSection, setReceiverId } =
     useContext(AuthContext);
-  const [userId, setUserId] = useState("");
-
-  useEffect(() => {
-    setUserId(localStorage.getItem("userId"));
-  }, []);
 
   const usersQuery = useQuery({
     queryKey: ["usersApi"],
@@ -48,7 +44,7 @@ export function AllUsers() {
     },
 
     onError: (err) => {
-      console.log(err);
+      toast.error(err.response.data.message || "Internal server error");
     },
   });
 

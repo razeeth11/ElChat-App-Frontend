@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Chats } from "../features/Chats/Chats";
 import { Conversations } from "../features/Conversations/Conversations";
 import { SettingsSection } from "../features/Settings-Section/Settings-Section";
@@ -10,7 +10,12 @@ import { StatusSection } from "../features/Status-Section/Status-Section";
 import { AllUsers } from "../features/All-Users/All-users";
 
 export function ChatPage() {
-  const { authSection } = useContext(AuthContext);
+  const { authSection, setUserId } = useContext(AuthContext);
+
+  useMemo(() => {
+    setUserId(localStorage.getItem("userId"));
+  }, []);
+
   return (
     <div className="flex">
       <div className="w-25 h-screen">

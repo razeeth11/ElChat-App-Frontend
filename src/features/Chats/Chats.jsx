@@ -9,18 +9,18 @@ import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_BASE_URL } from "../../App";
-
+import dayjs from "dayjs";
+import clsx from "clsx";
 export function Chats() {
-  const { setAuthSection } = useContext(AuthContext);
-
-  const userId = localStorage.getItem("userId");
+  const { setAuthSection, userId } = useContext(AuthContext);
 
   const { data } = useQuery({
     queryKey: ["chats", userId],
-    queryFn: async () => {
-      const result = await axios.get(`${LOCAL_BASE_URL}/chat/${userId}`);
+    queryFn: async ({ queryKey }) => {
+      const result = await axios.get(`${LOCAL_BASE_URL}/chat/${queryKey[1]}`);
       return result.data;
     },
+    enabled: !!userId,
   });
 
   return (
@@ -71,9 +71,9 @@ export function Chats() {
       </div>
       <ScrollArea className="rounded-md cursor-pointer h-[80vh]">
         <div className="flex flex-col gap-1 overflow-hidden">
-          {data?.chats.map((_, i) => (
+          {data?.chats.map((chat, i) => (
             <div key={i}>
-              <ChatSection />
+              <ChatSection chat={chat} userId={userId} />
             </div>
           ))}
         </div>
@@ -83,24 +83,57 @@ export function Chats() {
   );
 }
 
-export function ChatSection() {
+export function ChatSection({ chat, userId }) {
+  const { setConversationId, conversationId, setReceiverId } =
+    useContext(AuthContext);
+
+  const usersQuery = useQuery({
+    queryKey: ["usersApi"],
+    queryFn: async () => {
+      const result = await axios.get(`${LOCAL_BASE_URL}/user/allUsers`);
+      return result.data;
+    },
+    select: (data) => {
+      return {
+        ...data,
+        users: data.users?.filter((user) => user._id != userId),
+      };
+    },
+  });
+
+  const { data: allUsersList } = usersQuery;
+
+  const receiverId = chat?.users.filter((u) => u != userId);
+  const userDetail = allUsersList?.users.find((u) => u._id === receiverId[0]);
+
+  function selectConvo(chat) {
+    setConversationId(chat._id);
+    setReceiverId(userDetail?._id);
+  }
+
   return (
-    <div className="flex items-start gap-2.5 [&:hover]:bg-bg-tertiary p-2.5 rounded-sm">
+    <div
+      role="button"
+      className={clsx(
+        "flex items-start gap-2.5 [&:hover]:bg-bg-tertiary p-2.5 rounded-sm",
+        chat._id === conversationId && "bg-bg-tertiary"
+      )}
+      onClick={() => selectConvo(chat)}
+    >
       <div>
         <Avatar className="size-11">
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={userDetail?.avatarUrl} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </div>
       <div>
-        <h3 className="">Abdul Razeeth</h3>
+        <h3 className="">{userDetail?.displayName}</h3>
         <p className="w-70 whitespace-nowrap text-ellipsis overflow-x-hidden text-sm">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Consequuntur, iure?
+          {chat.lastMessage}
         </p>
       </div>
       <div className="text-[12px] ml-auto">
-        <p>10:50pm</p>
+        <p>{dayjs(chat.lastUpdatedAt).format("HH:mm")}</p>
       </div>
     </div>
   );
