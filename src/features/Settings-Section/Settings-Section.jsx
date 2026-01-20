@@ -60,7 +60,7 @@ export function SettingsSection() {
         />
       </div>
       <div>
-        <div className="flex items-center gap-2.5 [&:hover]:bg-bg-tertiary p-2.5 rounded-sm">
+        <div className="flex items-center gap-2.5 [&:hover]:bg-[#4b4b4b] cursor-pointer p-2.5 rounded-sm">
           <div>
             <Avatar className="size-14">
               <AvatarImage src="https://github.com/shadcn.png" />
@@ -79,7 +79,7 @@ export function SettingsSection() {
         ))}
         <Button
           variant="outline"
-          className="w-full p-5 mt-10 font-medium! text-red-700 border-2 border-red-900! [&:hover]:text-red-900 [&:hover]:border-red-900! [&:hover]:bg-red-900! hover:text-white! cursor-pointer"
+          className="w-full p-5 mt-10 font-medium! bg-red-900! text-white! border-none cursor-pointer"
         >
           <LogOut />
           Log out
@@ -91,7 +91,7 @@ export function SettingsSection() {
 
 function Options({ option }) {
   return (
-    <div className="flex items-center gap-5 [&:hover]:bg-bg-tertiary p-3 rounded-sm">
+    <div className="flex items-center gap-5 [&:hover]:bg-[#4b4b4b] p-3 rounded-sm cursor-pointer">
       <div>
         <option.icon />
       </div>

@@ -38,7 +38,7 @@ const topNavList = [
 ];
 
 export const navButtonStyle =
-  "rounded-full cursor-pointer p-5 [&:hover]:bg-bg-tertiary";
+  "rounded-full cursor-pointer p-5 [&:hover]:bg-[#4b4b4b]!";
 
 export function SideNavBar() {
   const { authSection, setAuthSection } = useContext(AuthContext);
@@ -52,7 +52,7 @@ export function SideNavBar() {
               size="icon"
               className={clsx(
                 navButtonStyle,
-                authSection === item.sectionName && "bg-[#4b4b4b]"
+                authSection === item.sectionName && "bg-[#4b4b4b]",
               )}
               onClick={() => setAuthSection(item.sectionName)}
             >
@@ -72,7 +72,7 @@ export function SideNavBar() {
             size="icon"
             className={clsx(
               navButtonStyle,
-              authSection === "settings-section" && "bg-[#4b4b4b]"
+              authSection === "settings-section" && "bg-[#4b4b4b]",
             )}
             onClick={() => setAuthSection("settings-section")}
           >
@@ -89,7 +89,7 @@ export function SideNavBar() {
             size="icon"
             className={clsx(
               navButtonStyle,
-              authSection === "profile-section" && "bg-[#4b4b4b]"
+              authSection === "profile-section" && "bg-[#4b4b4b]",
             )}
             onClick={() => setAuthSection("profile-section")}
           >

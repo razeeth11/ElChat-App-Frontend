@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { Chats } from "../features/Chats/Chats";
 import { Conversations } from "../features/Conversations/Conversations";
 import { SettingsSection } from "../features/Settings-Section/Settings-Section";
@@ -13,7 +13,7 @@ import { ProfileSection } from "../features/Profile-Section/Profile-Section";
 export function ChatPage() {
   const { authSection, setUserId } = useContext(AuthContext);
 
-  useMemo(() => {
+  useEffect(() => {
     setUserId(localStorage.getItem("userId"));
   }, []);
 

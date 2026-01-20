@@ -2,7 +2,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { EllipsisVertical, Plus, Search, SendHorizontal } from "lucide-react";
+import {
+  EllipsisVertical,
+  LockKeyhole,
+  Plus,
+  Search,
+  SendHorizontal,
+} from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { navButtonStyle } from "../Side-Nav-Section/Side-Nav-Bar";
 import clsx from "clsx";
@@ -33,7 +39,7 @@ export function Conversations() {
     queryKey: ["conversations", conversationId],
     queryFn: async ({ queryKey }) => {
       const result = await axios.get(
-        `${LOCAL_BASE_URL}/conversation/${queryKey[1]}`
+        `${LOCAL_BASE_URL}/conversation/${queryKey[1]}`,
       );
       return result.data;
     },
@@ -147,7 +153,7 @@ export function Conversations() {
           </div>
         </div>
       ) : (
-        <div>Vanakam da mapla</div>
+        <NoConversation />
       )}
     </>
   );
@@ -159,12 +165,35 @@ function ChatMessage({ msg, userId }) {
       className={clsx(
         "flex items-end gap-3 w-fit max-w-[60%] p-2 rounded-sm",
         msg.senderId === userId ? "bg-bg-tertiary" : "bg-bg-secondary",
-        msg.senderId === userId && "ml-auto"
+        msg.senderId === userId && "ml-auto",
       )}
     >
       <div>{msg.text}</div>
       <p className="text-[10px] text-gray-500">
         {dayjs(msg.sendedAt).format("HH:mm")}
+      </p>
+    </div>
+  );
+}
+
+function NoConversation() {
+  return (
+    <div className="h-full flex flex-col items-center justify-between p-5">
+      <div></div>
+      <div className="flex flex-col items-center justify-center gap-4">
+        <Search
+          strokeWidth={2.5}
+          absoluteStrokeWidth
+          className="size-10 text-gray-500"
+        />
+        <h2 className="text-2xl">ElChat Web Chat</h2>
+        <p className="text-center text-gray-500">
+          Send and receive messages without keeping your phone online.
+        </p>
+      </div>
+      <p className="flex items-center gap-2.5 text-center text-gray-500">
+        <LockKeyhole className="size-5" />
+        Your personal messages are end-to-end encrypted
       </p>
     </div>
   );
