@@ -63,9 +63,7 @@ export function OTPVerificationPage({ confirmationResult }) {
     };
     setLoader(true);
 
-    setTimeout(() => {
-      verifyOtpMutation.mutate(payload);
-    }, 1500);
+    verifyOtpMutation.mutate(payload);
   }
 
   return (
@@ -87,7 +85,7 @@ export function OTPVerificationPage({ confirmationResult }) {
                 setAuthPage("login-page");
               }}
             >
-              <SquarePen color="#7585ff" />
+              <SquarePen color="#7585ff" className="size-6" />
             </Button>
           </span>{" "}
         </p>

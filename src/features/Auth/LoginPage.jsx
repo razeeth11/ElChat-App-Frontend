@@ -68,9 +68,7 @@ export function LoginPage({ setConfirmationResult }) {
 
     setLoader(true);
 
-    setTimeout(() => {
-      sendOTPMutation.mutate();
-    }, 1500);
+    sendOTPMutation.mutate();
   }
 
   return (
