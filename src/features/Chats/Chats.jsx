@@ -57,19 +57,21 @@ export function Chats() {
             placeholder="Search"
           />
         </div>
-        <div className="flex items-center gap-2">
-          {["All", "Unread", "Favourites", "Groups"].map((list, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              className="border rounded-full py-1 px-4 cursor-pointer"
-            >
-              {list}
-            </Button>
-          ))}
-        </div>
+        {data?.chats.length ? (
+          <div className="flex items-center gap-2">
+            {["All", "Unread", "Favourites", "Groups"].map((list, index) => (
+              <Button
+                key={index}
+                variant="ghost"
+                className="border rounded-full py-1 px-4 cursor-pointer"
+              >
+                {list}
+              </Button>
+            ))}
+          </div>
+        ) : null}
       </div>
-      <ScrollArea className="rounded-md cursor-pointer h-[80vh]">
+      <ScrollArea className="cursor-pointer h-[80vh]">
         <div className="flex flex-col gap-1 overflow-hidden">
           {data?.chats.map((chat, i) => (
             <div key={i}>
@@ -77,7 +79,12 @@ export function Chats() {
             </div>
           ))}
         </div>
-        {data?.chats.length === 0 && <div>No Chats</div>}
+        {data?.chats.length === 0 && (
+          <div className="flex flex-col items-center justify-center mt-10">
+            <div>No chats yet!</div>
+            <div>Find users from top right</div>
+          </div>
+        )}
       </ScrollArea>
     </div>
   );
