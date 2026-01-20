@@ -8,6 +8,7 @@ import { ChannelSection } from "../features/Channels-Section/Channel-Section";
 import { CommunitiesSection } from "../features/Communities-Section/Communities-Section";
 import { StatusSection } from "../features/Status-Section/Status-Section";
 import { AllUsers } from "../features/All-Users/All-users";
+import { ProfileSection } from "../features/Profile-Section/Profile-Section";
 
 export function ChatPage() {
   const { authSection, setUserId } = useContext(AuthContext);
@@ -17,17 +18,18 @@ export function ChatPage() {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex bg-[#161717]">
       <div className="w-25 h-screen">
         <SideNavBar />
       </div>
-      <div className="bg-bg-secondary w-180">
+      <div className="bg-[#161717] w-180 border-r border-r-white-100">
         {authSection === "chat-section" && <Chats />}
         {authSection === "all-users" && <AllUsers />}
         {authSection === "settings-section" && <SettingsSection />}
         {authSection === "channel-section" && <ChannelSection />}
         {authSection === "community-section" && <CommunitiesSection />}
         {authSection === "status-section" && <StatusSection />}
+        {authSection === "profile-section" && <ProfileSection />}
       </div>
       <div className="w-full">
         <Conversations />
