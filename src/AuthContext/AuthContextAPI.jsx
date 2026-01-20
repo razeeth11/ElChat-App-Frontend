@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { AuthContext } from "./AuthContent";
+import { useCurrentUser } from "../services/userServices";
 
 export function AuthProvider({ children }) {
+  const { data: userData } = useCurrentUser();
   let authPageValue = localStorage.getItem("authPage");
   const [userId, setUserId] = useState("");
   const [authPage, setAuthPage] = useState(authPageValue || "login-page");
@@ -22,6 +24,7 @@ export function AuthProvider({ children }) {
         setConversationId,
         receiverId,
         setReceiverId,
+        userData,
       }}
     >
       {children}
