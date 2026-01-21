@@ -41,12 +41,13 @@ export const navButtonStyle =
   "rounded-full cursor-pointer p-5 [&:hover]:bg-[#4b4b4b]!";
 
 export function SideNavBar() {
-  const { authSection, setAuthSection } = useContext(AuthContext);
+  const { authSection, setAuthSection, userData } = useContext(AuthContext);
+
   return (
     <div className="border h-screen flex flex-col justify-between items-center py-2.5 bg-[#1d1f1f]">
       <div className="flex flex-col gap-2.5">
         {topNavList.map((item, index) => (
-          <GlobalTooltip key={index} content={item.name}>
+          <GlobalTooltip key={index} content={item.name} side={"right"}>
             <Button
               variant="ghost"
               size="icon"
@@ -66,7 +67,7 @@ export function SideNavBar() {
         ))}
       </div>
       <div className="flex flex-col items-center gap-2.5 pb-2.5">
-        <GlobalTooltip content="Settings">
+        <GlobalTooltip content="Settings" side={"right"}>
           <Button
             variant="ghost"
             size="icon"
@@ -83,7 +84,7 @@ export function SideNavBar() {
             />
           </Button>
         </GlobalTooltip>
-        <GlobalTooltip content="Profile">
+        <GlobalTooltip content="Profile" side={"right"}>
           <Button
             variant="ghost"
             size="icon"
@@ -94,7 +95,7 @@ export function SideNavBar() {
             onClick={() => setAuthSection("profile-section")}
           >
             <Avatar className="size-7">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={userData?.avatarUrl} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </Button>

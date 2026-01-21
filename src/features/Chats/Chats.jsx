@@ -11,6 +11,7 @@ import axios from "axios";
 import { LOCAL_BASE_URL } from "../../App";
 import dayjs from "dayjs";
 import clsx from "clsx";
+import GlobalTooltip from "../../components/ui/GlobalTooltip";
 export function Chats() {
   const { setAuthSection, userId } = useContext(AuthContext);
 
@@ -28,25 +29,29 @@ export function Chats() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-medium">ElChatApp</h2>
         <div className="flex items-center gap-2.5">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={navButtonStyle}
-            onClick={() => setAuthSection("all-users")}
-          >
-            <MessageSquarePlus
-              strokeWidth={2.5}
-              absoluteStrokeWidth
-              className="size-5"
-            />
-          </Button>
-          <Button variant="ghost" size="icon" className={navButtonStyle}>
-            <EllipsisVertical
-              strokeWidth={2.5}
-              absoluteStrokeWidth
-              className="size-5"
-            />
-          </Button>
+          <GlobalTooltip content="Find User" position="down">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={navButtonStyle}
+              onClick={() => setAuthSection("all-users")}
+            >
+              <MessageSquarePlus
+                strokeWidth={2.5}
+                absoluteStrokeWidth
+                className="size-5"
+              />
+            </Button>
+          </GlobalTooltip>
+          <GlobalTooltip content="Menu" position="down">
+            <Button variant="ghost" size="icon" className={navButtonStyle}>
+              <EllipsisVertical
+                strokeWidth={2.5}
+                absoluteStrokeWidth
+                className="size-5"
+              />
+            </Button>
+          </GlobalTooltip>
         </div>
       </div>
       <div className="flex flex-col gap-3">
@@ -123,7 +128,7 @@ export function ChatSection({ chat, userId }) {
       role="button"
       className={clsx(
         "flex items-start gap-2.5 [&:hover]:bg-bg-tertiary p-2.5 rounded-sm",
-        chat._id === conversationId && "bg-bg-tertiary"
+        chat._id === conversationId && "bg-bg-tertiary",
       )}
       onClick={() => selectConvo(chat)}
     >

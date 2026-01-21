@@ -8,7 +8,7 @@ import {
 export default function GlobalTooltip({
   content,
   children,
-  side = "right",
+  side,
   delay = 200,
 }) {
   return (
